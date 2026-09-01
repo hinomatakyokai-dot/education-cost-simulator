@@ -608,13 +608,21 @@ else:
                 final_cost = max(mext_val, juku_val)
             calc_note = "幾何平均 (文科省 × 大手)"
 
-        # ピーク期判定
+        # ピーク期・解説テキスト判定（ルート別に最適化）
         monthly_cost = int(final_cost / 12)
         if grade in ["小6", "中3", "高3"]:
-            peak_note = (
-                f"約 ¥{monthly_cost:,.0f}/月（受験本番：志望校特訓・直前対策等）"
-            )
-            is_peak = True
+            if grade == "小6" and not st.session_state.get(
+                "target_chuju", False
+            ):
+                # 高校受験ルート（中学受験なし）の小6
+                peak_note = f"約 ¥{monthly_cost:,.0f}/月（小学校復習・中学進学準備・基礎力定着）"
+                is_peak = False
+            else:
+                # 中学受験・高校受験・大学受験の本番年
+                peak_note = (
+                    f"約 ¥{monthly_cost:,.0f}/月（受験本番：志望校特訓・直前対策等）"
+                )
+                is_peak = True
         elif grade in ["小5", "中2", "高2"]:
             peak_note = f"約 ¥{monthly_cost:,.0f}/月（学習本格化・夏冬講習拡大）"
             is_peak = False
